@@ -6,8 +6,8 @@
 #-----------------------SET SOURCE AND DESTINATION FOLDERS HERE-------------------------------------------
 param($mode)
 
-$src="C:\Users\fdoskas\OneDrive - University of Edinburgh\Tools\Batch files"
-$dest="C:\Users\fdoskas\OneDrive - University of Edinburgh\Tools\bu"
+$src="C:\Users\fdoskas\OneDrive - University of Edinburgh\Tools\Powershell files\backup script\files"
+$dest="C:\Users\fdoskas\OneDrive - University of Edinburgh\Tools\Powershell files\backup script\bu"
 $nb=12
 
 #-------------------------------- DO NOT MODIFY BELOW THIS LINE ------------------------------------------------
@@ -19,15 +19,16 @@ $logFile="regular_bu_log.txt"
 switch ($mode){
 	D {$dest=$dest+"\daily"
 		#clean src folder
-		.\clean-up.ps1 -src $src -nb $30}
+		.\clean-up.ps1 -src $src -nb $nb
+		}
 	W {$dest=$dest+"\weekly"}
 	M {$dest=$dest+"\monthly"}
 	Y {$dest=$dest+"\yearly"}
-	default{ $mode+" - no mode selected" | Out-File -FilePath $logFile -Append
+	default{ $mode+" - no mode selected" | Out-File -FilePath $logFile -Append}
 }
 
 #back-up job
-.\bu_template.ps1 -src $src -dest $dest
+.\bu_template.ps1 -src $src -dest $dest -nb 1
 
 #clean bu folder
 .\clean-up.ps1 -src $dest -nb $nb

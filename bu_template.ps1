@@ -2,10 +2,11 @@
 #FD 2023-10-03 
 #
 #src and dest can be defined in the script by assigning it in the first part or be called dynamically by passing them as parameters
+#nb can also be called dynamically or set in first part and defines the maximum amount of files, sorted by most recent to copy
 
 #-----------------------SET SOURCE AND DESTINATION FOLDERS HERE-------------------------------------------
 
-param([string]$src="files", [string]$dest="bu")
+param([string]$src="files", [string]$dest="bu", [int]$nb=10000)
 
 #do not modify below this line
 #-------------------------------- DO NOT MODIFY BELOW THIS LINE ------------------------------------------------
@@ -33,7 +34,7 @@ catch{
 
 try {
 	create-item -path $dest | Out-File -FilePath $logFile -Append
-	Get-ChildItem -Path $src -File | Sort-Object -Descending -Property LastWriteTime| Copy-Item -Destination $dest -Recurse -PassThru | Out-File -FilePath $logFile -Append
+	Get-ChildItem -Path $src -File | Sort-Object -Descending -Property LastWriteTime | Select-Object -First $nb | Copy-Item -Destination $dest -Recurse -PassThru | Out-File -FilePath $logFile -Append
 }
 catch{
 	"back-up error" | Out-File -FilePath $logFile -Append

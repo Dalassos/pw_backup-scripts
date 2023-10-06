@@ -31,7 +31,8 @@ $logFile="file_creator_log.txt"
 create-item -path $dest | Out-File -FilePath $logFile -Append
 
 for ($i=1; $i-le$nb; $i++) {
-	$file = $dest+"\file"+$i+".txt"
+	$tstamp=Get-Date -Format FileDateTimeUniversal
+	$file = $dest+"\file"+$i+$tstamp+".txt"
 	"file to create :"+$file | Out-File -FilePath $logFile -Append
 	create-item -path $file | Out-File -FilePath $logFile -Append
 	"iteration"+$i | Out-File -FilePath $logFile -Append
