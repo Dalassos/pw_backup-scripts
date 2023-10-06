@@ -1,18 +1,19 @@
-#files creator for test purposes
+#Archive cleaner script
 #FD 2023-10-05 
+#
+#This will scan the folder defined in $src, sort it by date and keep only the $nb most recent ones while deleting the rest.
+#src and nb can be defined in the script by assigning it in the first part or be called dynamically by passing them as parameters
 
-#---------------------------------SET SOURCE FOLDERS HERE AND # OF FILES TO KEEP HERE-------------------------------------------
-$src="files"
-$nb=30
+#---------------------------SET DEFAULT SOURCE FOLDERS HERE AND # OF FILES TO KEEP HERE IF NOT CALLED DYNAMICALLY------------------------------------------------
 
-#do not modify below this line
+param([string]$src="files", [int]$nb=10)
+
 #-------------------------------- DO NOT MODIFY BELOW THIS LINE ------------------------------------------------
 
-$src2=$src+"\*.txt"
-
 $logFile="clean-up_log.txt"
-"New cleanup job" | Out-File -FilePath $logFile -Append
-Get-Date | Out-File -FilePath $logFile -Append
+.\log_init.ps1 $logFile "New cleanup job"
+
+$src2=$src+"\*.txt"
 
 
 $files=Get-ChildItem -Path $src2 -File | Sort-Object -Descending -Property LastWriteTime
@@ -27,4 +28,6 @@ for ($i=$nb; $i-lt$files.count; $i++) {
 	Remove-Item -Path $delItem
 }
 
-Read-Host -Prompt "Press any key to continue"
+if ($files.count-le$nb) {
+	"Back-up not full, nothing to clean"| Out-File -FilePath $logFile -Append
+}

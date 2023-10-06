@@ -1,18 +1,40 @@
 #Powershell script template for automated backups from source to destination folder
 #FD 2023-10-03 
+#
+#src and dest can be defined in the script by assigning it in the first part or be called dynamically by passing them as parameters
 
 #-----------------------SET SOURCE AND DESTINATION FOLDERS HERE-------------------------------------------
 
-$src="C:\Users\fdoskas\OneDrive - University of Edinburgh\Tools\Batch files"
-$dest="C:\Users\fdoskas\OneDrive - University of Edinburgh\Tools\bu"
+param([string]$src="files", [string]$dest="bu")
 
 #do not modify below this line
 #-------------------------------- DO NOT MODIFY BELOW THIS LINE ------------------------------------------------
+function create-item ($path){
+	If (Test-Path -Path $path){
+		"destination "+$path+" exists"
+	}
+	Else{
+		If($path -like "*.txt"){
+			New-Item -Path $path -ItemType File
+		}
+		Else{
+			New-Item -Path $path -ItemType Directory
+		}
+	}
+}
 
-$logFile="pw_bu_log.txt"
+try {
+	$logFile="back-up_log.txt"
+	.\log_init.ps1 $logFile "New back-up job"
+}
+catch{
+	"log init error"
+}
 
-Get-ExecutionPolicy -List | Out-File -FilePath $logFile
-
-#Invoke-Command -ComputerName trend963.is.ed.ac.uk -ScriptBlock { Get-ExecutionPolicy }
-
-Read-Host -Prompt "Press any key to continue"
+try {
+	create-item -path $dest | Out-File -FilePath $logFile -Append
+	Get-ChildItem -Path $src -File | Sort-Object -Descending -Property LastWriteTime| Copy-Item -Destination $dest -Recurse -PassThru | Out-File -FilePath $logFile -Append
+}
+catch{
+	"back-up error" | Out-File -FilePath $logFile -Append
+}
