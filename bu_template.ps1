@@ -6,7 +6,9 @@
 
 #-----------------------SET SOURCE AND DESTINATION FOLDERS HERE-------------------------------------------
 
-param([string]$src="files", [string]$dest="bu", [int]$nb=10000)
+param([string]$src="files",
+[string]$dest="bu",
+[int]$nb=10000)
 
 #do not modify below this line
 #-------------------------------- DO NOT MODIFY BELOW THIS LINE ------------------------------------------------
@@ -15,7 +17,7 @@ function create-item ($path){
 		"destination "+$path+" exists"
 	}
 	Else{
-		If($path -like "*.txt"){
+		If($path.split("\")[-1] -like "*.*"){
 			New-Item -Path $path -ItemType File
 		}
 		Else{

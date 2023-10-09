@@ -4,12 +4,12 @@
 #src and dest can be defined in the script by assigning it in the first part
 
 #-----------------------SET SOURCE AND DESTINATION FOLDERS HERE-------------------------------------------
-param($mode)
-
-$src="C:\Program Files (x86)\Trend Control Systems\963\db_backup"
-$dest="\\ed.ac.uk\dst\shared\CSG\EST\EB18\Ops\Works\Controls\Trend 963 backup"
-$nb=12
-
+param(
+[string]$mode=" ",
+[string]$src="C:\Program Files (x86)\Trend Control Systems\963\db_backup",
+[string]$dest="\\ed.ac.uk\dst\shared\CSG\EST\EB18\Ops\Works\Controls\Trend 963 backup",
+[int]$nb=12
+)
 #-------------------------------- DO NOT MODIFY BELOW THIS LINE ------------------------------------------------
 #log init
 $logFile="regular_bu_log.txt"
