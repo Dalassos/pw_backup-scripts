@@ -13,16 +13,22 @@ param([string]$src="files",
 #do not modify below this line
 #-------------------------------- DO NOT MODIFY BELOW THIS LINE ------------------------------------------------
 function create-item ($path){
-	If (Test-Path -Path $path){
-		"destination "+$path+" exists"
-	}
-	Else{
-		If($path.split("\")[-1] -like "*.*"){
-			New-Item -Path $path -ItemType File
+	try{
+ 		$testpath=Test-Path -Path $path
+		If ($testpath){
+			"destination "+$path+" exists"
 		}
 		Else{
-			New-Item -Path $path -ItemType Directory
+			If($path.split("\")[-1] -like "*.*"){
+				New-Item -Path $path -ItemType File
+			}
+			Else{
+				New-Item -Path $path -ItemType Directory
+			}
 		}
+  	}
+   	catch{
+	"access error : "+$PSItem | Out-File -FilePath $logFile -Append
 	}
 }
 
@@ -31,13 +37,16 @@ try {
 	.\log_init.ps1 $logFile "New back-up job"
 }
 catch{
-	"log init error"
+	"log init error : "+$PSItem | Out-File -FilePath $logFile -Append
 }
 
 try {
 	create-item -path $dest | Out-File -FilePath $logFile -Append
 	Get-ChildItem -Path $src -File | Sort-Object -Descending -Property LastWriteTime | Select-Object -First $nb | Copy-Item -Destination $dest -Recurse -PassThru | Out-File -FilePath $logFile -Append
 }
+catch[System.IO.IOException]{
+	"access error : "+$PSItem | Out-File -FilePath $logFile -Append
+}
 catch{
-	"back-up error" | Out-File -FilePath $logFile -Append
+	"back-up error : "+$PSItem | Out-File -FilePath $logFile -Append
 }
