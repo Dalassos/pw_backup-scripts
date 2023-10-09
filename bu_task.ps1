@@ -6,8 +6,8 @@
 #-----------------------SET SOURCE AND DESTINATION FOLDERS HERE-------------------------------------------
 param($mode)
 
-$src="C:\Users\fdoskas\OneDrive - University of Edinburgh\Tools\Powershell files\backup script\files"
-$dest="C:\Users\fdoskas\OneDrive - University of Edinburgh\Tools\Powershell files\backup script\bu"
+$src="C:\Program Files (x86)\Trend Control Systems\963\db_backup"
+$dest="\\ed.ac.uk\dst\shared\CSG\EST\EB18\Ops\Works\Controls\Trend 963 backup"
 $nb=12
 
 #-------------------------------- DO NOT MODIFY BELOW THIS LINE ------------------------------------------------
@@ -24,7 +24,10 @@ switch ($mode){
 	W {$dest=$dest+"\weekly"}
 	M {$dest=$dest+"\monthly"}
 	Y {$dest=$dest+"\yearly"}
-	default{ $mode+" - no mode selected" | Out-File -FilePath $logFile -Append}
+	default{ 
+		$dest=$dest+"\default"
+		$mode+" - no mode selected" | Out-File -FilePath $logFile -Append
+		}
 }
 
 #back-up job
